@@ -115,7 +115,7 @@ public class ArrayDeque<T> {
         return x;
     }
     public T get(int index){
-        return items[index];
+        return items[(nextfirst + 1 + index) % items.length];
     }
 
 }
