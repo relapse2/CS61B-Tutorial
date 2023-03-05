@@ -106,7 +106,8 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if(isEmpty()){
             return null;
         }
-        T x = items[plushelper((nextfirst))];
+        T x = items[nextfirst];
+        items[nextfirst] = null;
         nextfirst = plushelper(nextfirst);
         size -= 1;
         check();
@@ -117,7 +118,8 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if(isEmpty()){
             return null;
         }
-        T x = items[minushelper((nextlast))];
+        T x = items[nextlast];
+        items[nextlast] = null;
         nextlast = minushelper(nextlast);
         size -= 1;
         check();
