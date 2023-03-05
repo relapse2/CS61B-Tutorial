@@ -87,7 +87,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
             System.out.println(items[i]);
         }
     }
-    public void check(){
+    private void check(){
         if(size <= items.length*0.25 && size >= 16) {
             T[] items2 = (T[]) new Object[size];
             if (nextfirst < nextlast) {
@@ -106,8 +106,8 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if(isEmpty()){
             return null;
         }
-        T x = items[nextfirst];
-        items[nextfirst] = null;
+        T x = items[plushelper((nextfirst))];
+        items[plushelper((nextfirst))] = null;
         nextfirst = plushelper(nextfirst);
         size -= 1;
         check();
@@ -118,8 +118,8 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if(isEmpty()){
             return null;
         }
-        T x = items[nextlast];
-        items[nextlast] = null;
+        T x = items[minushelper((nextlast))];
+        items[plushelper((nextlast))] = null;
         nextlast = minushelper(nextlast);
         size -= 1;
         check();
@@ -127,6 +127,9 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
     }
     @Override
     public T get(int index){
+        if(isEmpty()){
+            return null;
+        }
         return items[(nextfirst + 1 + index) % items.length];
     }
 
