@@ -127,6 +127,28 @@ public class ArrayDequeTest {
 
     }
 
+    @Test
+    /* Test Iterator */ public void IteratorTest() {
+
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        int[] data = {5, 23, 42};
+        for (int i = 0; i < data.length; i++) {
+            lld1.addLast(data[i]);
+        }
+
+        Iterator<Integer> aseer = lld1.iterator();
+        int j = 0;
+        while (aseer.hasNext()) {
+            int i = aseer.next();
+            assertEquals("should have the same value", i, data[j]);
+            j += 1;
+        }
+
+        for (int i : lld1) {
+            System.out.println(i);
+        }
+    }
+
 
     @Test
     public void checkResizeTest() {
