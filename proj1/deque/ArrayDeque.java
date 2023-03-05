@@ -39,6 +39,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
     }
     @Override
     public void addFirst(T item){
+
         items[nextfirst] = item;
         nextfirst = minushelper(nextfirst);
         size += 1;
@@ -106,11 +107,11 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if(isEmpty()){
             return null;
         }
+        check();
         T x = items[plushelper((nextfirst))];
         items[plushelper((nextfirst))] = null;
         nextfirst = plushelper(nextfirst);
         size -= 1;
-        check();
         return x;
     }
     @Override
@@ -118,11 +119,11 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if(isEmpty()){
             return null;
         }
+        check();
         T x = items[minushelper((nextlast))];
         items[plushelper((nextlast))] = null;
         nextlast = minushelper(nextlast);
         size -= 1;
-        check();
         return x;
     }
     @Override
@@ -175,6 +176,10 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         for (int i = 0; i < size(); i++) {
             T item1 = get(i);
             T item2 = other.get(i);
+            if (item1 == null && item2 != null || item2 == null && item1 != null ){
+                return false;
+            }
+
             if (!item1.equals(item2)) {
                 return false;
             }
