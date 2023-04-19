@@ -1,6 +1,6 @@
 package hashmap;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
@@ -27,12 +27,23 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     /* Instance Variables */
     private Collection<Node>[] buckets;
+    private Set<K> keys;
     // You should probably define some more!
+    private static final int DEFAULT_INITIAL_SIZE = 16;
+    private static final double DEFAULT_LOAD_FACTOR = 0.75;
+    private int bucketSize;
+    private int nodesize;
+    private int initialSize;
+    private double loadFactor;
 
     /** Constructors */
-    public MyHashMap() { }
+    public MyHashMap() {
+        this(DEFAULT_INITIAL_SIZE, DEFAULT_LOAD_FACTOR);
+    }
 
-    public MyHashMap(int initialSize) { }
+    public MyHashMap(int initialSize) {
+        this(initialSize, DEFAULT_LOAD_FACTOR);
+    }
 
     /**
      * MyHashMap constructor that creates a backing array of initialSize.
@@ -41,13 +52,23 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param initialSize initial size of backing array
      * @param maxLoad maximum load factor
      */
-    public MyHashMap(int initialSize, double maxLoad) { }
+    public MyHashMap(int initialSize, double maxLoad) {
+        this.initialSize = initialSize;
+        this.loadFactor = maxLoad;
+        this.nodesize = 0;
+        this.bucketSize = initialSize;
+        buckets = createTable(bucketSize);
+        for (int i = 0; i < bucketSize; i++) {
+            buckets[i] = createBucket();
+        }
+        keys = new HashSet<>();
+    }
 
     /**
      * Returns a new node to be placed in a hash table bucket
      */
     private Node createNode(K key, V value) {
-        return null;
+        return new Node(key,value);
     }
 
     /**
@@ -69,7 +90,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * OWN BUCKET DATA STRUCTURES WITH THE NEW OPERATOR!
      */
     protected Collection<Node> createBucket() {
-        return null;
+        return new LinkedList<Node>();
     }
 
     /**
@@ -82,10 +103,100 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param tableSize the size of the table to create
      */
     private Collection<Node>[] createTable(int tableSize) {
-        return null;
+        return new Collection[tableSize];
     }
 
     // TODO: Implement the methods of the Map61B Interface below
     // Your code won't compile until you do so!
+    private int hash(K key) {
+        int h = key.hashCode();
+        return Math.floorMod(h, bucketSize);
+    }
+    @Override
+    public void clear(){
+        for (int i = 0; i < bucketSize; i++) {
+            buckets[i].clear();
+        }
+        keys.clear();
+        this.nodesize = 0;
+    }
+    @Override
+    public boolean containsKey(K key){
+        if(key == null){
+            return false;
+        }
+        int i = hash(key);
+        //必须哈希码和equal都满足，因为可能都重写过，就很麻烦
+        for (Node node : buckets[i]) {
+            if (node.key.equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    @Override
+    public V get(K key){
+        if(key == null){
+            return null;
+        }
+        int i = hash(key);
+        for (Node node : buckets[i]) {
+            if (node.key.equals(key)) {
+                return node.value;
+            }
+        }
+        return null;
+    }
+    @Override
+    public int size(){
+        return nodesize;
+    }
+    @Override
+    public Set<K> keySet(){
+        return keys;
+    }
+    @Override
+    public void put(K key, V value){
+        int i = hash(key);
+        if(containsKey(key)==false) {
+            Node node = createNode(key, value);
+            buckets[i].add(node);
+            keys.add(key);
+            nodesize++;
+            if (nodesize / bucketSize >= loadFactor) {
+                resize(bucketSize*2);
+            }
+        }else{
+            for (Node node : buckets[i]) {
+                if (node.key.equals(key)) {
+                    node.value = value;
+                }
+            }
+        }
+
+    }
+
+    //完成resize时，应当注意不能直接替换，而是建立一个新的hashmap，因为要实现整体的resize，hash后的key的位置也需要改变，因为hash与buckersize有关，值会变化，则我们去建立一个新的map，整体上实现，思考整体功能的结合）
+    //并且上面有一个getnode辅助函数也很有用，多个函数中的都有使用
+    private void resize(int newBucketSize){
+        MyHashMap<K, V> newMyHashMap = new MyHashMap<>(newBucketSize, this.loadFactor);
+        for (K key : keySet()) {
+            newMyHashMap.put(key, get(key));
+        }
+        this.bucketSize = newMyHashMap.bucketSize;
+        this.buckets = newMyHashMap.buckets;
+    }
+    @Override
+    public V remove(K key){
+        throw new UnsupportedOperationException("unsupported");
+    }
+    @Override
+    public V remove(K key, V value){
+        throw new UnsupportedOperationException("unsupported");
+    }
+    @Override
+    public Iterator<K> iterator(){
+        return keys.iterator();
+    }
 }
