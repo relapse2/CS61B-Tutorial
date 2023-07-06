@@ -126,7 +126,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             return false;
         }
         int i = hash(key);
-        //必须哈希码和equal都满足，因为可能都重写过，就很麻烦
+        //必须哈希码和equal都满足，因为可能都重写过，就很麻烦；；应该是通过hashcode缩小范围
         for (Node node : buckets[i]) {
             if (node.key.equals(key)) {
                 return true;
