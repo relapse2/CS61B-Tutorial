@@ -46,10 +46,10 @@ public class HexWorld {
             default: return Tileset.NOTHING;
         }
     }
-    private static class position{
+    private static class position{      //需要static来可以有构造方法
         int x;
         int y;
-        position(int x,int y){
+        public position(int x,int y){
             this.x = x;
             this.y = y;
         }
