@@ -611,6 +611,7 @@ public class GitletRepository {
         if (splitPoint.getId().equals(currCommit.getId())) {
             System.out.println("Current branch fast-forwarded.");
             checkoutBranch(branchName);
+            System.exit(0);
         }
         //以下为较为棘手的合并情况
         String message = "Merged " + branchName + " into " + currBranch + ".";
